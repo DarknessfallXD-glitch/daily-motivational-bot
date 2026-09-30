@@ -6,109 +6,244 @@ import textwrap
 BASE_DIR = Path(__file__).resolve().parent.parent
 OUTPUT_DIR = BASE_DIR / "output"
 
-OUTPUT_DIR.mkdir(exist_ok=True)
-
-
 WIDTH = 1080
 HEIGHT = 1350
 
 
-def load_font(size):
-    font_paths = [
-        "C:/Windows/Fonts/arial.ttf",
-        "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf"
-    ]
-
-    for path in font_paths:
-        if Path(path).exists():
-            return ImageFont.truetype(path, size)
-
-    return ImageFont.load_default()
+def load_font(path, size):
+    return ImageFont.truetype(path, size)
 
 
-def create_poster(quote, filename="motivation.png"):
+def create_poster(quote):
+    # --------------------------------------------------
+    # 1. Create canvas
+    # --------------------------------------------------
 
     image = Image.new(
         "RGB",
         (WIDTH, HEIGHT),
-        "#111111"
+        (18, 18, 20)
     )
 
     draw = ImageDraw.Draw(image)
 
-    quote_font = load_font(58)
-    author_font = load_font(36)
-    branding_font = load_font(30)
+    # --------------------------------------------------
+    # 2. Font paths
+    # --------------------------------------------------
 
-    # Wrap the quote
-    wrapped_quote = textwrap.fill(
-        quote["text"],
+    regular_font_path = "C:/Windows/Fonts/arial.ttf"
+    bold_font_path = "C:/Windows/Fonts/arialbd.ttf"
+
+    # --------------------------------------------------
+    # 3. Adaptive quote font
+    # --------------------------------------------------
+
+    quote_length = len(quote["text"])
+
+    if quote_length < 70:
+        quote_size = 70
+    elif quote_length < 120:
+        quote_size = 60
+    elif quote_length < 180:
+        quote_size = 52
+    else:
+        quote_size = 46
+
+    quote_font = load_font(
+        regular_font_path,
+        quote_size
+    )
+
+    # Other fonts
+    author_font = load_font(
+        regular_font_path,
+        34
+    )
+
+    brand_font = load_font(
+        bold_font_path,
+        26
+    )
+
+    quote_mark_font = load_font(
+        bold_font_path,
+        130
+    )
+
+    # --------------------------------------------------
+    # 4. Top accent line
+    # --------------------------------------------------
+
+    draw.rounded_rectangle(
+        (70, 70, 1010, 78),
+        radius=4,
+        fill=(255, 180, 70)
+    )
+
+    # --------------------------------------------------
+    # 5. Brand name
+    # --------------------------------------------------
+
+    draw.text(
+        (70, 115),
+        "DAILY MOTIVATION",
+        font=brand_font,
+        fill=(255, 180, 70)
+    )
+
+    # --------------------------------------------------
+    # 6. Quote mark
+    # --------------------------------------------------
+
+    draw.text(
+        (70, 250),
+        "“",
+        font=quote_mark_font,
+        fill=(255, 180, 70)
+    )
+
+    # --------------------------------------------------
+    # 7. Prepare quote text
+    # --------------------------------------------------
+
+    quote_text = quote["text"]
+
+    lines = textwrap.wrap(
+        quote_text,
         width=28
     )
 
-    # Calculate quote position
-    quote_box = draw.multiline_textbbox(
-        (0, 0),
-        wrapped_quote,
-        font=quote_font,
-        spacing=15,
-        align="center"
+    line_height = int(
+        quote_size * 1.35
     )
 
-    quote_width = quote_box[2] - quote_box[0]
-    quote_height = quote_box[3] - quote_box[1]
-
-    quote_x = (WIDTH - quote_width) / 2
-    quote_y = (HEIGHT - quote_height) / 2 - 100
-
-    # Draw quote
-    draw.multiline_text(
-        (quote_x, quote_y),
-        wrapped_quote,
-        font=quote_font,
-        fill="white",
-        spacing=15,
-        align="center"
+    total_height = (
+        len(lines) * line_height
     )
 
-    # Author
+    # Center quote vertically
+    start_y = (
+        (HEIGHT - total_height) // 2
+        - 40
+    )
+
+    # --------------------------------------------------
+    # 8. Draw quote
+    # --------------------------------------------------
+
+    for i, line in enumerate(lines):
+
+        bbox = draw.textbbox(
+            (0, 0),
+            line,
+            font=quote_font
+        )
+
+        text_width = (
+            bbox[2] - bbox[0]
+        )
+
+        x = (
+            WIDTH - text_width
+        ) // 2
+
+        y = (
+            start_y
+            + i * line_height
+        )
+
+        draw.text(
+            (x, y),
+            line,
+            font=quote_font,
+            fill=(245, 245, 245)
+        )
+
+    # --------------------------------------------------
+    # 9. Author
+    # --------------------------------------------------
+
     author = f"— {quote['author']}"
 
-    author_box = draw.textbbox(
+    bbox = draw.textbbox(
         (0, 0),
         author,
         font=author_font
     )
 
-    author_width = author_box[2] - author_box[0]
+    author_width = (
+        bbox[2] - bbox[0]
+    )
+
+    author_y = (
+        start_y
+        + total_height
+        + 50
+    )
 
     draw.text(
-        ((WIDTH - author_width) / 2, quote_y + quote_height + 70),
+        (
+            (WIDTH - author_width) // 2,
+            author_y
+        ),
         author,
         font=author_font,
-        fill="#CCCCCC"
+        fill=(180, 180, 185)
     )
 
-    # Branding
-    branding = "DAILY MOTIVATION"
+    # --------------------------------------------------
+    # 10. Bottom separator
+    # --------------------------------------------------
 
-    branding_box = draw.textbbox(
+    draw.rounded_rectangle(
+        (70, 1190, 1010, 1193),
+        radius=2,
+        fill=(70, 70, 75)
+    )
+
+    # --------------------------------------------------
+    # 11. Footer
+    # --------------------------------------------------
+
+    footer = (
+        "ONE DAY. ONE QUOTE. ONE STEP FORWARD."
+    )
+
+    bbox = draw.textbbox(
         (0, 0),
-        branding,
-        font=branding_font
+        footer,
+        font=brand_font
     )
 
-    branding_width = branding_box[2] - branding_box[0]
+    footer_width = (
+        bbox[2] - bbox[0]
+    )
 
     draw.text(
-        ((WIDTH - branding_width) / 2, HEIGHT - 100),
-        branding,
-        font=branding_font,
-        fill="#888888"
+        (
+            (WIDTH - footer_width) // 2,
+            1230
+        ),
+        footer,
+        font=brand_font,
+        fill=(140, 140, 145)
     )
 
-    output_path = OUTPUT_DIR / filename
+    # --------------------------------------------------
+    # 12. Save poster
+    # --------------------------------------------------
 
-    image.save(output_path, quality=95)
+    OUTPUT_DIR.mkdir(
+        exist_ok=True
+    )
+
+    output_path = (
+        OUTPUT_DIR / "motivation.png"
+    )
+
+    image.save(
+        output_path,
+        quality=95
+    )
 
     return output_path
