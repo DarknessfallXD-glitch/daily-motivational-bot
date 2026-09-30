@@ -6,18 +6,48 @@ from datetime import datetime
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 OUTPUT_DIR = BASE_DIR / "output"
+FONT_DIR = BASE_DIR / "fonts"
 
 WIDTH = 1080
 HEIGHT = 1350
 
 
+# --------------------------------------------------
+# Font paths
+# --------------------------------------------------
+
+REGULAR_FONT = FONT_DIR / "DejaVuSans.ttf"
+BOLD_FONT = FONT_DIR / "DejaVuSans-Bold.ttf"
+
+
 def load_font(path, size):
-    return ImageFont.truetype(path, size)
+    return ImageFont.truetype(str(path), size)
 
 
 def create_poster(quote):
+
     # --------------------------------------------------
-    # 1. Create canvas
+    # 1. Check fonts
+    # --------------------------------------------------
+
+    print("Font directory:", FONT_DIR)
+    print("Regular font:", REGULAR_FONT)
+    print("Regular font exists:", REGULAR_FONT.exists())
+    print("Bold font:", BOLD_FONT)
+    print("Bold font exists:", BOLD_FONT.exists())
+
+    if not REGULAR_FONT.exists():
+        raise FileNotFoundError(
+            f"Regular font not found: {REGULAR_FONT}"
+        )
+
+    if not BOLD_FONT.exists():
+        raise FileNotFoundError(
+            f"Bold font not found: {BOLD_FONT}"
+        )
+
+    # --------------------------------------------------
+    # 2. Create canvas
     # --------------------------------------------------
 
     image = Image.new(
@@ -27,31 +57,6 @@ def create_poster(quote):
     )
 
     draw = ImageDraw.Draw(image)
-
-# --------------------------------------------------
-# 2. Font paths
-# --------------------------------------------------
-
-FONT_DIR = BASE_DIR / "fonts"
-
-regular_font_path = FONT_DIR / "DejaVuSans.ttf"
-bold_font_path = FONT_DIR / "DejaVuSans-Bold.ttf"
-
-print("Font directory:", FONT_DIR)
-print("Regular font:", regular_font_path)
-print("Regular font exists:", regular_font_path.exists())
-print("Bold font:", bold_font_path)
-print("Bold font exists:", bold_font_path.exists())
-
-if not regular_font_path.exists():
-    raise FileNotFoundError(
-        f"Regular font not found: {regular_font_path}"
-    )
-
-if not bold_font_path.exists():
-    raise FileNotFoundError(
-        f"Bold font not found: {bold_font_path}"
-    )
 
     # --------------------------------------------------
     # 3. Adaptive quote font
@@ -69,23 +74,22 @@ if not bold_font_path.exists():
         quote_size = 46
 
     quote_font = load_font(
-        regular_font_path,
+        REGULAR_FONT,
         quote_size
     )
 
-    # Other fonts
     author_font = load_font(
-        regular_font_path,
+        REGULAR_FONT,
         34
     )
 
     brand_font = load_font(
-        bold_font_path,
+        BOLD_FONT,
         26
     )
 
     quote_mark_font = load_font(
-        bold_font_path,
+        BOLD_FONT,
         130
     )
 
@@ -141,6 +145,7 @@ if not bold_font_path.exists():
     )
 
     # Center quote vertically
+
     start_y = (
         (HEIGHT - total_height) // 2
         - 40
