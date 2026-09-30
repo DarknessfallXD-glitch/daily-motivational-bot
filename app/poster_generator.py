@@ -35,6 +35,9 @@ def create_poster(quote):
    # --------------------------------------------------
 # 2. Font paths
 # --------------------------------------------------
+# --------------------------------------------------
+# 2. Font paths
+# --------------------------------------------------
 
     windows_regular = Path("C:/Windows/Fonts/arial.ttf")
     windows_bold = Path("C:/Windows/Fonts/arialbd.ttf")
@@ -50,10 +53,15 @@ def create_poster(quote):
     if windows_regular.exists():
         regular_font_path = windows_regular
         bold_font_path = windows_bold
-    else:
+
+    elif linux_regular.exists():
         regular_font_path = linux_regular
         bold_font_path = linux_bold
 
+    else:
+        raise FileNotFoundError(
+            "No suitable font found."
+        )
     # --------------------------------------------------
     # 3. Adaptive quote font
     # --------------------------------------------------
@@ -262,7 +270,7 @@ def create_poster(quote):
     output_path = (
         OUTPUT_DIR / f"motivation_{today}.png"
     )
- 
+
     image.save(
         output_path,
         quality=95
