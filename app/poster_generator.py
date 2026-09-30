@@ -32,8 +32,27 @@ def create_poster(quote):
     # 2. Font paths
     # --------------------------------------------------
 
-    regular_font_path = "C:/Windows/Fonts/arial.ttf"
-    bold_font_path = "C:/Windows/Fonts/arialbd.ttf"
+   # --------------------------------------------------
+# 2. Font paths
+# --------------------------------------------------
+
+    windows_regular = Path("C:/Windows/Fonts/arial.ttf")
+    windows_bold = Path("C:/Windows/Fonts/arialbd.ttf")
+
+    linux_regular = Path(
+        "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf"
+    )
+
+    linux_bold = Path(
+        "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf"
+    )
+
+    if windows_regular.exists():
+        regular_font_path = windows_regular
+        bold_font_path = windows_bold
+    else:
+        regular_font_path = linux_regular
+        bold_font_path = linux_bold
 
     # --------------------------------------------------
     # 3. Adaptive quote font
