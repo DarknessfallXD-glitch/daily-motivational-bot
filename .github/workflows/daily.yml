@@ -8,24 +8,57 @@ permissions:
 
 jobs:
   generate:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: "3.13"
 
+      - name: Show environment
+        run: |
+          echo "Python:"
+          python --version
+
+          echo "Pillow:"
+          python -m pip --version
+
+          echo "Repository files:"
+          ls -la
+
+          echo "App files:"
+          ls -la app
+
+          echo "Data files:"
+          ls -la data
+
+          echo "Output directory:"
+          ls -la output || true
+
       - name: Install dependencies
         run: |
-          pip install -r requirements.txt
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements.txt
+
+      - name: Test Pillow
+        run: |
+          python -c "from PIL import Image, ImageDraw, ImageFont; print('Pillow works!')"
 
       - name: Generate poster
         run: |
           python app/main.py
+
+      - name: Show generated files
+        run: |
+          echo "Generated files:"
+          ls -lah output
+
+          echo "History:"
+          cat data/history.json
 
       - name: Commit updated history
         run: |
@@ -34,9 +67,12 @@ jobs:
 
           git add data/history.json
 
-          git diff --cached --quiet || git commit -m "Update quote history"
-
-          git push
+          if git diff --cached --quiet; then
+            echo "No history changes to commit."
+          else
+            git commit -m "Update quote history"
+            git push
+          fi
 
       - name: Upload poster
         uses: actions/upload-artifact@v4
