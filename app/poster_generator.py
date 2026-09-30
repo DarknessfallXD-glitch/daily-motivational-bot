@@ -37,6 +37,12 @@ FONT_DIR = BASE_DIR / "fonts"
 regular_font_path = FONT_DIR / "DejaVuSans.ttf"
 bold_font_path = FONT_DIR / "DejaVuSans-Bold.ttf"
 
+print("Font directory:", FONT_DIR)
+print("Regular font:", regular_font_path)
+print("Regular font exists:", regular_font_path.exists())
+print("Bold font:", bold_font_path)
+print("Bold font exists:", bold_font_path.exists())
+
 if not regular_font_path.exists():
     raise FileNotFoundError(
         f"Regular font not found: {regular_font_path}"
@@ -46,6 +52,7 @@ if not bold_font_path.exists():
     raise FileNotFoundError(
         f"Bold font not found: {bold_font_path}"
     )
+
     # --------------------------------------------------
     # 3. Adaptive quote font
     # --------------------------------------------------

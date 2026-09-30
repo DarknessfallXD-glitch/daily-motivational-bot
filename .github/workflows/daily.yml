@@ -62,6 +62,22 @@ jobs:
         run: |
           python -c "from PIL import Image, ImageDraw, ImageFont; print('Pillow works!')"
 
+      - name: Check font files
+        run: |
+                echo "Current directory:"
+                pwd
+
+                echo "Font directory:"
+                ls -lah fonts
+
+                echo "File information:"
+                file fonts/DejaVuSans.ttf
+                file fonts/DejaVuSans-Bold.ttf
+
+                echo "Font sizes:"
+                wc -c fonts/DejaVuSans.ttf
+                wc -c fonts/DejaVuSans-Bold.ttf
+
       - name: Generate poster
         run: |
           python app/main.py
