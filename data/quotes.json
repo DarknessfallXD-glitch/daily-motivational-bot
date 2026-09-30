@@ -1,0 +1,32 @@
+[
+  {
+    "id": 1,
+    "text": "The secret of getting ahead is getting started.",
+    "author": "Mark Twain",
+    "category": "Action"
+  },
+  {
+    "id": 2,
+    "text": "Success is the sum of small efforts, repeated day in and day out.",
+    "author": "Robert Collier",
+    "category": "Consistency"
+  },
+  {
+    "id": 3,
+    "text": "It always seems impossible until it's done.",
+    "author": "Nelson Mandela",
+    "category": "Persistence"
+  },
+  {
+    "id": 4,
+    "text": "The future depends on what you do today.",
+    "author": "Mahatma Gandhi",
+    "category": "Action"
+  },
+  {
+    "id": 5,
+    "text": "Great things are done by a series of small things brought together.",
+    "author": "Vincent van Gogh",
+    "category": "Growth"
+  }
+]
