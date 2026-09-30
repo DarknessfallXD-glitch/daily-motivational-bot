@@ -1,6 +1,7 @@
 from PIL import Image, ImageDraw, ImageFont
 from pathlib import Path
 import textwrap
+from datetime import datetime
 
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -237,10 +238,12 @@ def create_poster(quote):
         exist_ok=True
     )
 
-    output_path = (
-        OUTPUT_DIR / "motivation.png"
-    )
+    today = datetime.now().strftime("%Y-%m-%d")
 
+    output_path = (
+        OUTPUT_DIR / f"motivation_{today}.png"
+    )
+ 
     image.save(
         output_path,
         quality=95
