@@ -28,40 +28,24 @@ def create_poster(quote):
 
     draw = ImageDraw.Draw(image)
 
-    # --------------------------------------------------
-    # 2. Font paths
-    # --------------------------------------------------
-
-   # --------------------------------------------------
-# 2. Font paths
-# --------------------------------------------------
 # --------------------------------------------------
 # 2. Font paths
 # --------------------------------------------------
 
-    windows_regular = Path("C:/Windows/Fonts/arial.ttf")
-    windows_bold = Path("C:/Windows/Fonts/arialbd.ttf")
+FONT_DIR = BASE_DIR / "fonts"
 
-    linux_regular = Path(
-        "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf"
+regular_font_path = FONT_DIR / "DejaVuSans.ttf"
+bold_font_path = FONT_DIR / "DejaVuSans-Bold.ttf"
+
+if not regular_font_path.exists():
+    raise FileNotFoundError(
+        f"Regular font not found: {regular_font_path}"
     )
 
-    linux_bold = Path(
-        "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf"
+if not bold_font_path.exists():
+    raise FileNotFoundError(
+        f"Bold font not found: {bold_font_path}"
     )
-
-    if windows_regular.exists():
-        regular_font_path = windows_regular
-        bold_font_path = windows_bold
-
-    elif linux_regular.exists():
-        regular_font_path = linux_regular
-        bold_font_path = linux_bold
-
-    else:
-        raise FileNotFoundError(
-            "No suitable font found."
-        )
     # --------------------------------------------------
     # 3. Adaptive quote font
     # --------------------------------------------------
