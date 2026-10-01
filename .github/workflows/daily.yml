@@ -3,9 +3,6 @@ name: Daily Motivation
 on:
   workflow_dispatch:
 
-  schedule:
-    - cron: "15 2 * * *"
-
 permissions:
   contents: write
 
@@ -81,9 +78,12 @@ jobs:
                 wc -c fonts/DejaVuSans.ttf
                 wc -c fonts/DejaVuSans-Bold.ttf
 
-      - name: Generate poster
-        run: |
-          python app/main.py
+      - name: Generate and publish
+        run: python app/main.py
+        env:
+          FACEBOOK_PAGE_ID: ${{ secrets.FACEBOOK_PAGE_ID }}
+          FACEBOOK_PAGE_ACCESS_TOKEN: ${{ secrets.FACEBOOK_PAGE_ACCESS_TOKEN }}
+          FACEBOOK_GRAPH_API_VERSION: v26.0
 
       - name: Show generated files
         run: |
